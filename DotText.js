@@ -46,10 +46,8 @@
                     let dis = calc_dis([data.x, data.y], [this.x, this.y]);
                     let dx = data.x - this.x;
                     let dy = data.y - this.y;
-                    dx = Math.sign(dx) * Math.max(Math.abs(dx), 15) * 0.05;
-                    dy = Math.sign(dy) * Math.max(Math.abs(dy), 15) * 0.05;
-                    this.x += dx;
-                    this.y += dy;
+                    this.x += Math.sign(dx) * Math.max(Math.abs(dx), 10) * 0.08;
+                    this.y += Math.sign(dy) * Math.max(Math.abs(dy), 10) * 0.08;
                     this.a = (1 - (dis - 10) / 200);
                     if(dis < 1) {
                         this.n = {t: 2, d: {x: data.x, y: data.y}};
@@ -60,9 +58,9 @@
                     this.y = data.y - Math.sin(Math.random() * Math.PI);
                     break;
                 case 3: // remove
-                    this.a -= 0.03;
-                    this.r -= 0.1;
-                    if(this.r < 0.1) {
+                    this.a -= 0.08;
+                    this.r -= 0.2;
+                    if (this.r < 0.2) {
                         this.s = -1;
                         this.n = null;
                     }
@@ -193,9 +191,11 @@
             let del_list = this._dots.slice(a, b);
             let repeat = () => {
                 if(del_time < this._last) return;
-                let dot = del_list.shift();
-                if(!dot) return;
-                dot.remove();
+                let dots = del_list.splice(0, Math.ceil(del_list.length / 25));
+                if(!dots.length) return;
+                dots.forEach(dot => {
+                    dot.remove();
+                });
                 requestAnimationFrame(repeat);
             };
 
