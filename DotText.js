@@ -43,6 +43,10 @@
             let {t: type, d: data} = this.n;
             switch (type) {
                 case 1: // move
+                    if (this._r) {
+                        this.r = this._r;
+                        Reflect.deleteProperty(this, '_r');
+                    }
                     let dis = calc_dis([data.x, data.y], [this.x, this.y]);
                     let dx = data.x - this.x;
                     let dy = data.y - this.y;
@@ -58,6 +62,7 @@
                     this.y = data.y - Math.sin(Math.random() * Math.PI);
                     break;
                 case 3: // remove
+                    if(!this._r) this._r = this.r;
                     this.a -= 0.08;
                     this.r -= 0.2;
                     if (this.r < 0.2) {
