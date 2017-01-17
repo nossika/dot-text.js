@@ -1,8 +1,8 @@
 (factory => {
-    let root = (typeof self == 'object' && self.self === self && self) ||
-        (typeof global == 'object' && global.global === global && global);
+    let root = (typeof self === 'object' && self.self === self && self) ||
+        (typeof global === 'object' && global.global === global && global);
     if (typeof define === 'function' && define.amd) {
-        define([], ()=> {
+        define([], () => {
             root.DotText = factory();
         });
     } else if (typeof exports === 'object') {
@@ -29,6 +29,7 @@
     };
 
     class Dot {
+
         constructor ({x, y, r, c}) {
             this.x = x;
             this.y = y;
@@ -38,6 +39,7 @@
             this.s = 1; // 1 - def / -1 - removed
             this.n = null; // next action
         }
+
         update () {
             if(!this.n) return;
             let {t: type, d: data} = this.n;
@@ -53,7 +55,7 @@
                     this.x += Math.sign(dx) * Math.max(Math.abs(dx), 10) * 0.08;
                     this.y += Math.sign(dy) * Math.max(Math.abs(dy), 10) * 0.08;
                     this.a = (1 - (dis - 10) / 200);
-                    if(dis < 1) {
+                    if (dis < 1) {
                         this.n = {t: 2, d: {x: data.x, y: data.y}};
                     }
                     break;
@@ -62,7 +64,7 @@
                     this.y = data.y - Math.sin(Math.random() * Math.PI);
                     break;
                 case 3: // remove
-                    if(!this._r) this._r = this.r;
+                    if (!this._r) this._r = this.r;
                     this.a -= 0.08;
                     this.r -= 0.2;
                     if (this.r < 0.2) {
@@ -72,6 +74,7 @@
                     break;
             }
         }
+
         draw (ctx) {
             ctx.fillStyle = get_rgba(this.c.r, this.c.g, this.c.b, this.a);
             ctx.beginPath();
@@ -79,15 +82,17 @@
             ctx.closePath();
             ctx.fill();
         }
+
         move (x, y) {
             this.n = {t: 1, d: {x, y}}
         }
+
         remove () {
             this.n = {t: 3}
         }
     }
 
-    const Shape = (()=>{
+    const Shape = (() => {
         let canvas, ctx;
         canvas = document.createElement('canvas');
         ctx = canvas.getContext('2d');
@@ -108,9 +113,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 init_ctx(text_size, text_family);
-
                 let [text_w, text_h] = [ctx.measureText(text).width, text_size];
-
                 canvas.width = text_w + dot_gap - text_w % dot_gap;
                 canvas.height = text_h;
                 init_ctx(text_size, text_family);
@@ -141,6 +144,7 @@
     })();
 
     class DotText {
+
         constructor (canvas) {
             this._ctx = canvas.getContext('2d');
             canvas.width = canvas.offsetWidth;
@@ -151,6 +155,7 @@
             this._last = Date.now();
             this._go();
         }
+
         text (text, config = {}) {
             this._last = Date.now();
 
@@ -181,13 +186,14 @@
                         x: Math.random() * this._w,
                         y: Math.random() * this._h,
                         r: config.dot_size || 5,
-                        c: config.dot_color || {r: 255, g: 255, b: 255}
+                        c: config.dot_color || {r: 255, g: 255, b: 255},
                     });
                     this._dots.push(dot);
                 }
                 dot.move(x + offset_x, y + offset_y);
             });
         }
+
         clear (range) {
             this._last = Date.now();
             let del_time = this._last;
@@ -195,17 +201,18 @@
             let [a, b] = range ? range : [0, this._dots.length];
             let del_list = this._dots.slice(a, b);
             let repeat = () => {
-                if(del_time < this._last) return;
+                if (del_time < this._last) return;
                 let dots = del_list.splice(0, Math.ceil(del_list.length / 25));
-                if(!dots.length) return;
+                if (!dots.length) return;
                 dots.forEach(dot => {
                     dot.remove();
                 });
                 requestAnimationFrame(repeat);
             };
 
-            requestAnimationFrame(repeat)
+            requestAnimationFrame(repeat);
         }
+
         resize () {
             let canvas = this._ctx.canvas;
             this._w = canvas.width = canvas.offsetWidth;
@@ -218,6 +225,7 @@
                 }, 200);
             }
         }
+
         _go () {
             let ctx = this._ctx;
             ctx.clearRect(0, 0, this._w, this._h);
@@ -231,6 +239,9 @@
             });
             requestAnimationFrame(this._go.bind(this));
         }
+
     }
+    
     return DotText;
+
 });
