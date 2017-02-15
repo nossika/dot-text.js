@@ -49,7 +49,7 @@ Clear all dots on canvas.
 
 Reset dots' position by current size of canvas.
 
-## Ticks
+## Tips
 
 * Remember to excute `resize` method to reset dos' position when canvas size changed. The `resize` method has 200ms delay so don't worry about the performance.
 
