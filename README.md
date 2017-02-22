@@ -1,6 +1,6 @@
 # DotText.js
 
-Make some magic text on canvas! 
+Draw texts, which are composed of dots, with shifting animation on canvas.
 
 ## Examples
 
@@ -11,35 +11,29 @@ Make some magic text on canvas!
 		dt.text('hello!');
 	</script>
 
-Click [demo](https://nossika.github.io/DotText.js/demo.html) to try it online.
+Click [DEMO](https://nossika.github.io/DotText.js/demo.html) to try it!
 
 ## Methods
 
-### text(str [,option])
+### text(str, option)
  
 Render `str` on canvas.
 
-option:
+params: 
 
-1. dot_size (*type: Number, default: 5*)
+* **str** (required, type: String)
 
-	radius of dot, unit is px.
+* **option** (optional, type: Object)
 
-2. dot_color (*type: Object, default: `{r: 255, g:255, b:255}`*)
-	
-	color of dot.
+	* **dot_size** (type: Number, default: 5): radius of dot, unit is px.
 
-3. dot_gap (*type: Number, default: 14*)
+	* **dot_color** (type: Object, default: `{r: 255, g:255, b:255}`): color of dot.
 
-	gap of dot, unit is px.
+	* **dot_gap** (type: Number, default: 14): gap of dot, unit is px.
 
-4. text_size (*type: Number, default: 300*)
+	* **text_size** (type: Number, default: 300): font-size of text, unit is px.
 
-	font-size of text, unit is px.
-
-5. text_family (*type: String, default: `'Microsoft YaHei', Helvetica, Arial, monospace`*)
-
-	font-family of text.
+	* **text_family** (type: String, default: " 'Microsoft YaHei', Helvetica, Arial, monospace "): font-family of text.
 
 ### clear()
 
