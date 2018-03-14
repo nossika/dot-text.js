@@ -11,7 +11,7 @@ Draw texts, which are composed of dots, with shifting animation on canvas.
 		dt.text('hello!');
 	</script>
 
-Click [DEMO](https://nossika.github.io/DotText.js/demo.html) to try it!
+Click [DEMO](https://nossika.github.io/dot-text.js/demo.html) to try it!
 
 ## Methods
 
