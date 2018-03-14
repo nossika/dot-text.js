@@ -1,22 +1,21 @@
-const calc_dis = (p1, p2) => {
+function calcDistance (p1, p2) {
     return Math.pow(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2), 1 / 2);
-};
+}
 
-const get_rgba = (r, g, b, a) => {
+function getRGBAString (r, g, b, a) {
     return `rgba(${r},${g},${b},${a})`;
-};
+}
 
-const shuffle_arr = (arr) => {
+function shuffleArray (arr) {
     arr = arr.slice();
-    let new_arr = [];
+    const newArr = [];
     while (arr.length) {
-        new_arr.push(arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
+        newArr.push(arr.splice(Math.floor(Math.random() * arr.length), 1)[0]);
     }
-    return new_arr;
-};
+    return newArr;
+}
 
 class Dot {
-
     constructor ({x, y, r, c}) {
         this.x = x;
         this.y = y;
@@ -36,7 +35,7 @@ class Dot {
                     this.r = this._r;
                     Reflect.deleteProperty(this, '_r');
                 }
-                let dis = calc_dis([data.x, data.y], [this.x, this.y]);
+                let dis = calcDistance([data.x, data.y], [this.x, this.y]);
                 let dx = data.x - this.x;
                 let dy = data.y - this.y;
                 this.x += Math.sign(dx) * Math.max(Math.abs(dx), 10) * 0.08;
@@ -63,7 +62,7 @@ class Dot {
     }
 
     draw (ctx) {
-        ctx.fillStyle = get_rgba(this.c.r, this.c.g, this.c.b, this.a);
+        ctx.fillStyle = getRGBAString(this.c.r, this.c.g, this.c.b, this.a);
         ctx.beginPath();
         ctx.arc(this.x, this.y ,this.r, 0, Math.PI * 2);
         ctx.closePath();
@@ -84,7 +83,7 @@ const Shape = (() => {
     canvas = document.createElement('canvas');
     ctx = canvas.getContext('2d');
 
-    let init_ctx = (size, family) => {
+    let initCtx = (size, family) => {
         ctx.fillStyle = '#000';
         ctx.textBaseline = 'middle';
         ctx.textAlign = 'center';
@@ -92,39 +91,39 @@ const Shape = (() => {
     };
 
     return {
-        text_shape (text, {
-            dot_gap = 14,
-            text_size = 300,
-            text_family = `'Microsoft YaHei', Helvetica, Arial, monospace`,
+        textShape (text, {
+            gap = 14,
+            textSize = 300,
+            textFamily = `'Microsoft YaHei', Helvetica, Arial, monospace`,
         }) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            init_ctx(text_size, text_family);
-            let [text_w, text_h] = [ctx.measureText(text).width, text_size];
-            canvas.width = text_w + dot_gap - text_w % dot_gap;
-            canvas.height = text_h;
-            init_ctx(text_size, text_family);
+            initCtx(textSize, textFamily);
+            let [textW, textH] = [ctx.measureText(text).width, textSize];
+            canvas.width = textW + gap - textW % gap;
+            canvas.height = textH;
+            initCtx(textSize, textFamily);
 
             ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
             let colors = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             let pos = [];
-            for (let a_index = 3, x = 0, y = 0; a_index < colors.length; ) {
-                if (colors[a_index] > 0) {
+            for (let alphaIndex = 3, x = 0, y = 0; alphaIndex < colors.length; ) {
+                if (colors[alphaIndex] > 0) {
                     pos.push([x, y]);
                 }
-                a_index += (4 * dot_gap);
-                x += dot_gap;
+                alphaIndex += (4 * gap);
+                x += gap;
                 if (x >= canvas.width) {
                     x -= canvas.width;
-                    y += dot_gap;
-                    a_index += dot_gap * 4 * canvas.width;
+                    y += gap;
+                    alphaIndex += gap * 4 * canvas.width;
                 }
             }
             return {
                 pos,
-                w: text_w,
-                h: text_h
+                w: textW,
+                h: textH
             };
         }
     };
@@ -148,13 +147,13 @@ class DotText {
 
         this._param = [text, config];
 
-        let {pos, w: text_w, h: text_h} = Shape.text_shape(text, config);
-        pos = shuffle_arr(pos);
+        let {pos, w: textW, h: textH} = Shape.textShape(text, config);
+        pos = shuffleArray(pos);
 
-        if (config.dot_size || config.dot_color) {
+        if (config.dotSize || config.dotColor) {
             this._dots.forEach(dot => {
-                dot.c = config.dot_color || dot.c;
-                dot.r = config.dot_size || dot.r;
+                dot.c = config.dotColor || dot.c;
+                dot.r = config.dotSize || dot.r;
             })
         }
 
@@ -162,7 +161,7 @@ class DotText {
 
         this.clear([need, cur]); // remove surplus
 
-        let [offset_x, offset_y] = [(this._w - text_w) / 2, (this._h - text_h) / 2];
+        let [offsetX, offsetY] = [(this._w - textW) / 2, (this._h - textH) / 2];
 
         pos.forEach(([x, y], i) => {
             let dot;
@@ -172,24 +171,24 @@ class DotText {
                 dot = new Dot({
                     x: Math.random() * this._w,
                     y: Math.random() * this._h,
-                    r: config.dot_size || 5,
-                    c: config.dot_color || {r: 255, g: 255, b: 255},
+                    r: config.dotSize || 5,
+                    c: config.dotColor || {r: 255, g: 255, b: 255},
                 });
                 this._dots.push(dot);
             }
-            dot.move(x + offset_x, y + offset_y);
+            dot.move(x + offsetX, y + offsetY);
         });
     }
 
     clear (range) {
         this._last = Date.now();
-        let del_time = this._last;
+        let delTime = this._last;
 
         let [a, b] = range ? range : [0, this._dots.length];
-        let del_list = this._dots.slice(a, b);
+        let delList = this._dots.slice(a, b);
         let repeat = () => {
-            if (del_time < this._last) return;
-            let dots = del_list.splice(0, Math.ceil(del_list.length / 25));
+            if (delTime < this._last) return;
+            let dots = delList.splice(0, Math.ceil(delList.length / 25));
             if (!dots.length) return;
             dots.forEach(dot => {
                 dot.remove();
@@ -209,7 +208,7 @@ class DotText {
             this._resizing = setTimeout(() => {
                 this.text(...this._param);
                 Reflect.deleteProperty(this, '_resizing');
-            }, 200);
+            }, 100);
         }
     }
 
