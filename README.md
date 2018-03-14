@@ -5,7 +5,7 @@ Draw texts, which are composed of dots, with shifting animation on canvas.
 ## Examples
 
 	<canvas id="example"></canvas>
-	<script src="DotText.min.js"></script>
+	<script src="dot-text.min.js"></script>
 	<script>
 		let dt = new DotText(document.querySelector('#example'));
 		dt.text('hello!');
